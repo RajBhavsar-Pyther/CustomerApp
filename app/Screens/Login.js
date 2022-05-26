@@ -38,24 +38,55 @@ export const Login = ()=>{
         
       };
 
-    const onLoginButton = () => {
-        console.log(">> on login button");
-        loadingOn(true);
-        setTimeout(() => {
-            if (phone == "9876543210" && password=="admin") {
-                navigation.navigate('Register', { name: phone});
-                setPhone('');
-                setPassword('');
-                loadingOn(false);
-    
-            } else {
-                alert('Username/Password should be 9876543210/admin.');
-                loadingOn(false);
+      const onLoginButton = (values) => {
+        try{
 
+            setLoading(true);
+
+            let uri = Global.LOGIN_API
+            var loginObj = {
+                mobileNumber: values.mobileNumber,
+                password: values.password
             }
-        }, 1000)
-        
+            console.log(Constants.CONOSLE_REQUEST, TAG + " callLoginAPI Request " , JSON.stringify(loginObj));
+            ApiServices.callServicePostWithBodyData(uri,loginObj,handleLogin)
+        }catch(err){console.log("REQ ERR",err)}
 
+    };
+
+    const handleLogin = async(response, isError) => {
+        console.log(Constants.CONOSLE_SUCCESS ,TAG + " callLoginAPI Response " , JSON.stringify(response));
+        console.log(Constants.CONOSLE_ERROR, TAG + " callLoginAPI isError " , isError);
+        
+        if (!isError) 
+        {
+
+            if (response != undefined && response != null) {
+                if(response?.message){
+                    console.log("if called");
+                    popUpEnable(response?.message ? response.message : '',false,false,undefined)
+                }
+                else{
+                    let data = {
+                     fullName : response?.result?.data?.user?.lastName ? response.result.data.user.firstName.concat(" ", response.result.data.user.lastName) : response.result.data.user.firstName,
+                     token :response?.result?.token,
+                     userId : response?.result?.data?.user?._id
+                        
+                    }
+                    logIn(data)
+                   
+                }
+                
+            } else {
+              popUpEnable(undefined,false,false)
+            }
+        } else { 
+            
+            popUpEnable(undefined,false,false)
+
+        }
+
+       setLoading(false);
     }
 
    const onForgetText = () => navigation.navigate('ForgetPassword');
