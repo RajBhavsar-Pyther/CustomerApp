@@ -22,7 +22,7 @@ const DatePicker = (props) => {
     <View>
       {/* Display the selected date */}
       <Pressable style={[styles.pickedDateContainer,props.dateContainerStyle]} onPress={showPicker} disabled={props.disabled ? props.disabled : !isPickerShow ? false : true}>
-        <Text style={[styles.pickedDate,props.dateTextStyle,{color:(!props.date && props.placeholder) ? "#999" : props.dateTextStyle.color}]}>{props.date ? moment(props.date).format(props.format) : props.placeholder}</Text>
+        <Text style={[styles.pickedDate,props.dateTextStyle,{color:(!props.date && props.placeholder) ? "#999" : props.dateTextStyle.color}]}>{props.date ? moment(props.date).format(props?.format ? props.format : 'YYYY-MM-DD') : props.placeholder}</Text>
        <FontAwesome5 name={props.customIcon ? props.customIcon :'calendar' } size={props.iconSize ? props.iconSize : 20} color={'#000'} />
       </Pressable>
 
